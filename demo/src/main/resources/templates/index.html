@@ -23,36 +23,45 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
-  <div class="container-fluid px-5">
-    <a class="navbar-brand texto-titulo" href="#">VIAGO</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNavAltMarkup"
-      aria-controls="navbarNavAltMarkup"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" href="/index">Home</a>
-        <a class="nav-link" href="/viajes">Viajes</a>
-        <a class="nav-link" href="/servicios">Servicios</a>
-        <a class="nav-link" href="#">Contacto</a>
+      <div class="container-fluid px-5">
+        <a class="navbar-brand texto-titulo" href="#">VIAGO</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavAltMarkup"
+          aria-controls="navbarNavAltMarkup"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-link" href="/index">Home</a>
+            <a class="nav-link" href="/viajes">Viajes</a>
+            <a class="nav-link" href="/servicios">Servicios</a>
+            <a class="nav-link" href="#">Contacto</a>
 
-        <!-- Si no hay sesión iniciada, mostrar Iniciar Sesion -->
-        <a class="nav-link" th:if="${session.admin == null and session.conductor == null and session.usuario == null}" href="/login">Iniciar Sesión</a>
+            <!-- Si no hay sesión iniciada, mostrar Iniciar Sesion -->
+            <a
+              class="nav-link"
+              th:if="${session.admin == null and session.conductor == null and session.usuario == null}"
+              href="/login"
+              >Iniciar Sesión</a
+            >
 
-        <!-- Si hay sesión iniciada, mostrar Cerrar Sesión -->
-        <a class="nav-link" th:if="${session.admin != null or session.conductor != null or session.usuario != null}" href="/logout">Cerrar Sesión</a>
+            <!-- Si hay sesión iniciada, mostrar Cerrar Sesión -->
+            <a
+              class="nav-link"
+              th:if="${session.admin != null or session.conductor != null or session.usuario != null}"
+              href="/logout"
+              >Cerrar Sesión</a
+            >
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</nav>
-
+    </nav>
 
     <div id="carouselExampleCaptions" class="carousel slide">
       <div class="carousel-indicators">
@@ -95,20 +104,6 @@
         </div>
         <div class="carousel-item">
           <img
-            src="https://t3.ftcdn.net/jpg/07/99/00/76/360_F_799007622_KMoxfFCAfQQ1dlOVLjPr5Xuz0IAMHl86.jpg"
-            class="d-block w-100 img-banner img-fluid"
-            alt="img2"
-          />
-          <div class="carousel-caption">
-            <h2 class="texto-titulo">Transporte publico exclusivo</h2>
-            <span class="texto-descriptivo"
-              >Descubre una nueva forma de viajar a traves de los distritos de
-              la ciudad GOTHAM</span
-            >
-          </div>
-        </div>
-        <div class="carousel-item">
-          <img
             src="https://artmantransfers.com/wp-content/uploads/2023/08/airport-transfer-taxi-artman.jpg"
             class="d-block w-100 img-banner img-fluid"
             alt="img3"
@@ -146,60 +141,55 @@
         <div class="col text-center">
           <h1 class="texto-titulo">Bienvenido a VIAGO</h1>
           <p class="texto-descriptivo">
-            Aquí encontrarás una nueva forma de moverte a través de Lima
+            Aquí encontrarás una nueva forma de moverte a través de Lima junto a
+            nuestros conductores calificados.
           </p>
         </div>
       </div>
       <div class="row">
         <div class="col text-center">
           <h1 class="texto-titulo">Conoce acerca de nuestros servicios</h1>
-          <div class="servicios card mb-3">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img
-                  th:src="@{images/taxi.jpg}"
-                  class="img-fluid w-25 rounded-start"
-                  alt="Taxi"
-                />
-              </div>
-              <div class="col-md-8">
-                <div class="card-body">
-                  <h5 class="card-title">Taxi Particular</h5>
-                  <p class="card-text">
-                    Vehiculos de alta calidad con nuestros mejores conductores
-                    calificados, disponibles para llevarte a donde quieras.
-                  </p>
-                </div>
-              </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6 col-md-12 mb-3">
+          <!-- Tarjeta 1 -->
+          <div class="servicios card mb-3 h-100">
+            <div class="image-container rounded-start">
+              <img th:src="@{images/taxifondo.jpg}" alt="Taxi" />
+            </div>
+            <div class="card-body text-start">
+              <h5 class="card-title">Taxi Particular</h5>
+              <p class="card-text">
+                Vehículos de alta calidad con nuestros mejores conductores
+                calificados, disponibles para llevarte a donde quieras.
+              </p>
             </div>
           </div>
-          <div class="servicios card mb-3">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img
-                  th:src="@{images/bus.avif}"
-                  class="img-fluid w-25 rounded-start"
-                  alt="Taxi"
-                />
-              </div>
-              <div class="col-md-8">
-                <div class="card-body">
-                  <h5 class="card-title">Vehiculo Privado</h5>
-                  <p class="card-text">
-                    Reserva un vehiculo personal para que te lleve a tu destino.
-                    Cuando quieras, desde donde quieras y hacia donde quieras. Con rastreo en vivo
-                    y seguridad garantizada.
-                  </p>
-                </div>
-              </div>
+        </div>
+
+        <div class="col-lg-6 col-md-12 mb-3">
+          <!-- Tarjeta 2 -->
+          <div class="servicios card mb-3 h-100">
+            <div class="image-container rounded-start">
+              <img th:src="@{images/privado.webp}" alt="Vehículo Privado" />
+            </div>
+            <div class="card-body text-start">
+              <h5 class="card-title">Vehículo Privado</h5>
+              <p class="card-text">
+                Reserva un vehículo personal para que te lleve a tu destino.
+                Cuando quieras, desde donde quieras y hacia donde quieras.
+              </p>
             </div>
           </div>
         </div>
       </div>
+
     </div>
 
     <footer class="bg-dark text-white text-center py-4">
-      <p class="mb-0">&copy; 2025 Le Llante. Todos los derechos reservados.</p>
+      <p class="mb-0">&copy; 2025 Viago. Todos los derechos reservados.</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

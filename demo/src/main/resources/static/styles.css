@@ -8,6 +8,7 @@
   font-style: normal;
 }
 
+
 .texto-descriptivo{
   font-family: "Cal Sans", sans-serif;
   font-weight: 400;
@@ -16,9 +17,18 @@
 
 }
 
-.servicios{
-    max-width: 540px;
-}
+.image-container {
+    height: 300px; /* Altura igual para todas las imágenes */
+    overflow: hidden;
+  }
+
+  .image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Recorta sin deformar */
+    object-position: center; /* Centra el recorte */
+  }
+
 
 .opciones-servicios{
   width: 18rem
