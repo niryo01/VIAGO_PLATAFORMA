@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VIAGO</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" th:href="@{/styles.css}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cal+Sans&family=Special+Gothic+Expanded+One&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+  <div class="container-fluid px-5">
+    <a class="navbar-brand texto-titulo" href="#">VIAGO</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" href="/index">Home</a>
+        <a class="nav-link" href="/viajes">Viajes</a>
+        <a class="nav-link" href="/servicios">Servicios</a>
+        <a class="nav-link" href="#">Contacto</a>
+
+        <!-- Si no hay sesión iniciada, mostrar Iniciar Sesion -->
+        <a class="nav-link" th:if="${session.admin == null and session.conductor == null and session.usuario == null}" href="/login">Iniciar Sesión</a>
+
+        <!-- Si hay sesión iniciada, mostrar Cerrar Sesión -->
+        <a class="nav-link" th:if="${session.admin != null or session.conductor != null or session.usuario != null}" href="/logout">Cerrar Sesión</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+    <div class="container text-center mt-3">
+      <div class="row">
+        <div class="col texto-titulo">
+          <h2>Seleccione el servicio que desea utilizar</h2>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col">
+          <div class="card opciones-servicio">
+            <div class="card-body">
+              <h5 class="card-title">Taxi Privado</h5>
+              <p class="card-text">
+                Buscar vehiculos cercanos a su ubicación en este momento.
+              </p>
+              <a href="#" class="btn btn-primary">Viajar</a>
+            </div>
+          </div>
+        </div>
+       </div>
+       <div class="row mt-3">
+        <div class="col">
+          <div class="card opciones-servicio">
+            <div class="card-body">
+              <h5 class="card-title">Vehiculo privado</h5>
+              <p class="card-text">
+                Agendar un vehiculo privado que lo llevara a su destino, cuando quiera, desde donde quiera.
+              </p>
+              <a th:href="@{/servicios/vehiculo-privado}" class="btn btn-primary">Viajar</a>
+            </div>
+          </div>
+        </div>
+       </div>
+       <div class="row mt-3">
+        <div class="col">
+          <div class="card opciones-servicio">
+            <div class="card-body">
+              <h5 class="card-title">Transporte privado de Viago</h5>
+              <p class="card-text">
+                Una alternativa para los que desean vivir la experiencia de viajar en bus con Viago
+              </p>
+              <a href="#" class="btn btn-primary">Viajar</a>
+            </div>
+          </div>
+        </div>
+       </div>
+      
+    </div>
+
+
+
+
+
+
+    <footer class="bg-dark text-white text-center py-4 mt-3">
+      <p class="mb-0">&copy; 2025 Le Llante. Todos los derechos reservados.</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
