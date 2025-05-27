@@ -53,9 +53,33 @@
 
 <div class="container">
   <div class="row">
-    <div class="col"></div>
+    <div class="col">
+      <h2 class="my-4 text-center">Usuarios Registrados</h2>
+
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="usuario : ${usuarios}">
+              <td th:text="${usuario.idUsuario}"></td>
+              <td th:text="${usuario.nombre}"></td>
+              <td th:text="${usuario.apellido}"></td>
+              <td><a href="#" class="btn btn-link">Ver Reservas</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
+
     
 
 

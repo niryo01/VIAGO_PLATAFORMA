@@ -14,4 +14,6 @@ public class Conductor {
     private String licenciaConducir;
     private boolean disponibilidad;
     private String idVehiculo;
+    private String correo;
+    private String contraseña;
 }

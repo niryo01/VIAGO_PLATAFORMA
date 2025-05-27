@@ -1,20 +1,32 @@
 package com.example.demo;
 
 import jakarta.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.demo.dao.AdminDAO;
+import com.example.demo.dao.ConductorDAO;
+import com.example.demo.dao.UsuarioDAO;
+
+
 @Controller
 public class LoginController {
 
-    private final Admin admin = new Admin("admin@viago.com", "admin123");
-    private final ConductorLogin conductor = new ConductorLogin("conductor@viago.com", "1234");
+    @Autowired
+    private UsuarioDAO usuarioDAO;
 
-    // Usuario de ejemplo
-    private final Usuario usuario = new Usuario("user1", "Juan", "Perez", "usuario@viago.com", "user123", "999999999");
+    @Autowired
+    private ConductorDAO conductorDAO;
+
+    @Autowired
+    private AdminDAO adminDAO;
+
+    // Ya no necesitas constructor, Spring inyecta automáticamente
 
     @GetMapping("/login")
     public String showLoginForm() {
@@ -23,23 +35,35 @@ public class LoginController {
 
     @PostMapping("/login")
     public String processLogin(@RequestParam String email,
-            @RequestParam String password,
-            HttpSession session,
-            Model model) {
+                               @RequestParam String password,
+                               HttpSession session,
+                               Model model) {
+        Admin admin = adminDAO.obtenerAdmin();
         if (email.equals(admin.getEmail()) && password.equals(admin.getPassword())) {
             session.setAttribute("admin", email);
             return "redirect:/admin";
-        } else if (email.equals(conductor.getEmail()) && password.equals(conductor.getPassword())) {
-            session.setAttribute("conductor", email);
-            return "redirect:/vistaConductor";
-        } else if (email.equals(usuario.getCorreo()) && password.equals(usuario.getContraseña())) {
-            session.setAttribute("usuario", usuario);
-            return "redirect:/index"; // redirige al formulario de reserva
-        } else {
-            model.addAttribute("error", "Email o contraseña incorrectos");
-            return "login";
         }
+
+        Conductor conductor = conductorDAO.obtenerPorCorreo(email);
+        if (conductor != null && password.equals(conductor.getContraseña())) {
+            session.setAttribute("conductor", conductor);
+            return "redirect:/vistaConductor";
+        }
+
+        Usuario usuario = usuarioDAO.obtenerPorCorreo(email);
+        if (usuario != null && password.equals(usuario.getContraseña())) {
+            session.setAttribute("usuario", usuario);
+            return "redirect:/index";
+        }
+
+        model.addAttribute("error", "Email o contraseña incorrectos");
+        return "login";
     }
+
+
+
+
+
 
     @GetMapping("/admin")
     public String showAdminPage(HttpSession session, Model model) {
