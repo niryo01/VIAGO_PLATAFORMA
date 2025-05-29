@@ -72,3 +72,27 @@ COMO USARLO
 Después del login, serás redirigido a la vista correspondiente según el rol.
 Intentar acceder a rutas sin sesión redirige al login con alerta.
 GET /logout cierra sesión.
+
+
+
+
+
+
+
+
+VERSION 3:
+Cambios realizados principalmente en la clase de LoginController, en ReservaController y en la vista de viajes.html
+
+Validación de correo electrónico:
+ - Se agregó EmailValidator de Apache Commons Validator para asegurarse de que el email ingresado sea válido antes de buscar en la BD.
+
+Manejo seguro de null:
+ - Se usó Optional de Google Guava para evitar errores por valores null al obtener usuarios/conductores.
+
+Verificación de contraseña vacía:
+ - Se validó que la contraseña no esté vacía antes de comparar, usando Strings.isNullOrEmpty() de Guava.
+
+Registro de eventos de login:
+ - Se integró Logger de SLF4J para registrar accesos exitosos y fallidos (auditoría y seguridad).
+
+Reserva en formato 
