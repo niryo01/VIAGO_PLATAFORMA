@@ -1,7 +1,6 @@
 package com.example.demo;
 
 import jakarta.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,10 +11,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.demo.dao.AdminDAO;
 import com.example.demo.dao.ConductorDAO;
 import com.example.demo.dao.UsuarioDAO;
+// Asegúrate de tener esta clase
 
+// Google Guava
+import com.google.common.base.Optional;
+import com.google.common.base.Strings;
+
+// Apache Commons Validator
+import org.apache.commons.validator.routines.EmailValidator;
+
+// SLF4J (usado por Logback)
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 public class LoginController {
+
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class); // Logger para monitorear eventos
 
     @Autowired
     private UsuarioDAO usuarioDAO;
@@ -25,8 +37,6 @@ public class LoginController {
 
     @Autowired
     private AdminDAO adminDAO;
-
-    // Ya no necesitas constructor, Spring inyecta automáticamente
 
     @GetMapping("/login")
     public String showLoginForm() {
@@ -38,38 +48,57 @@ public class LoginController {
                                @RequestParam String password,
                                HttpSession session,
                                Model model) {
+
+        // Apache Commons: validación de email
+        EmailValidator validator = EmailValidator.getInstance();
+        if (!validator.isValid(email)) {
+            model.addAttribute("error", "Correo inválido");
+            logger.warn("Intento de login con correo inválido: {}", email);
+            return "login";
+        }
+
         Admin admin = adminDAO.obtenerAdmin();
         if (email.equals(admin.getEmail()) && password.equals(admin.getPassword())) {
             session.setAttribute("admin", email);
+            logger.info("Inicio de sesión exitoso como ADMIN: {}", email);
             return "redirect:/admin";
         }
 
         Conductor conductor = conductorDAO.obtenerPorCorreo(email);
-        if (conductor != null && password.equals(conductor.getContraseña())) {
-            session.setAttribute("conductor", conductor);
+        Optional<Conductor> optConductor = Optional.fromNullable(conductor); // Guava: Optional para evitar null
+
+        if (optConductor.isPresent() &&
+            !Strings.isNullOrEmpty(password) &&
+            password.equals(optConductor.get().getContraseña())) {
+
+            session.setAttribute("conductor", optConductor.get());
+            logger.info("Inicio de sesión exitoso como CONDUCTOR: {}", email);
             return "redirect:/vistaConductor";
         }
 
         Usuario usuario = usuarioDAO.obtenerPorCorreo(email);
-        if (usuario != null && password.equals(usuario.getContraseña())) {
-            session.setAttribute("usuario", usuario);
+        Optional<Usuario> optUsuario = Optional.fromNullable(usuario); // Guava: Optional
+
+        if (optUsuario.isPresent() &&
+            !Strings.isNullOrEmpty(password) &&
+            password.equals(optUsuario.get().getContraseña())) {
+
+            session.setAttribute("usuario", optUsuario.get());
+            logger.info("Inicio de sesión exitoso como USUARIO: {}", email);
             return "redirect:/index";
         }
 
+        // Si ningún login fue exitoso
         model.addAttribute("error", "Email o contraseña incorrectos");
+        logger.warn("Fallo de inicio de sesión para: {}", email);
         return "login";
     }
-
-
-
-
-
 
     @GetMapping("/admin")
     public String showAdminPage(HttpSession session, Model model) {
         if (session.getAttribute("admin") == null) {
             model.addAttribute("alerta", "Primero debes iniciar sesión");
-            return "login"; // retornamos la vista login con alerta
+            return "login";
         }
         return "vistaAdmin";
     }
