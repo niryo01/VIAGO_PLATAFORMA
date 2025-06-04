@@ -84,7 +84,7 @@ public class LoginController {
             password.equals(optUsuario.get().getContraseña())) {
 
             session.setAttribute("usuario", optUsuario.get());
-            logger.info("Inicio de sesión exitoso como USUARIO: {}", email);
+            logger.info("Inicio de sesión exitoso como USUARIO:: {}", email);
             return "redirect:/index";
         }
 
