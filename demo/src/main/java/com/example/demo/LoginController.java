@@ -63,7 +63,7 @@ public class LoginController {
             logger.info("Inicio de sesión exitoso como ADMIN: {}", email);
             return "redirect:/admin";
         }
-         // Apache Commons: validación de email asdasdasdsa
+         // Apache Commons: validación de email asdasdasdsa  777
 
         Conductor conductor = conductorDAO.obtenerPorCorreo(email);
         Optional<Conductor> optConductor = Optional.fromNullable(conductor); // Guava: Optional para evitar null
