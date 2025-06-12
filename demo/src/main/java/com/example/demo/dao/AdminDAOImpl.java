@@ -8,7 +8,7 @@ public class AdminDAOImpl implements AdminDAO {
     private final Admin admin;
 
     public AdminDAOImpl() {
-        // Aquí defines el admin único que usarás
+        // usuario definido
         this.admin = new Admin("admin@viago.com", "admin123");
     }
 

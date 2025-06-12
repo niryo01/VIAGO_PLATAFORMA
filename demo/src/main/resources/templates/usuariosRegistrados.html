@@ -71,7 +71,8 @@
               <td th:text="${usuario.idUsuario}"></td>
               <td th:text="${usuario.nombre}"></td>
               <td th:text="${usuario.apellido}"></td>
-              <td><a href="#" class="btn btn-link">Ver Reservas</a></td>
+              <td><a th:href="@{/admin/reservas/{id}(id=${usuario.idUsuario})}" class="btn btn-link">Ver Reservas</a>
+</td>
             </tr>
           </tbody>
         </table>

@@ -52,7 +52,34 @@
 
 <div class="container">
   <div class="row">
-    <div class="col"></div>
+    <div class="col">
+      <h2 class="my-4 text-center">
+  Reservas de <span th:text="${usuario.nombre} + ' ' + ${usuario.apellido}">Nombre Apellido</span>
+</h2>
+
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th>ID Reserva</th>
+      <th>Fecha</th>
+      <th>Hora</th>
+      <th>Origen</th>
+      <th>Destino</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="reserva : ${reservas}">
+      <td th:text="${reserva.idReserva}"></td>
+      <td th:text="${reserva.fechaReserva}"></td>
+      <td th:text="${reserva.horaReserva}"></td>
+      <td th:text="${reserva.origenReserva}"></td>
+      <td th:text="${reserva.destinoReserva}"></td>
+    </tr>
+  </tbody>
+</table>
+      </div>
+    </div>
   </div>
 </div>
 

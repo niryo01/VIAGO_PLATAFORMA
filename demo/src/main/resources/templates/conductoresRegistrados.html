@@ -50,10 +50,28 @@
   </div>
 </nav>
 
-<div class="container">
-  <div class="row">
-    <div class="col"></div>
-  </div>
+<div class="container mt-5">
+  <h2 class="mb-4">Conductores Registrados</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID Conductor</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>ID Vehículo</th>
+        <th>Correo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="conductor : ${conductores}">
+        <td th:text="${conductor.idConductor}"></td>
+        <td th:text="${conductor.nombre}"></td>
+        <td th:text="${conductor.apellido}"></td>
+        <td th:text="${conductor.idVehiculo}"></td>
+        <td th:text="${conductor.correo}"></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
     
 
