@@ -50,45 +50,54 @@
   </div>
 </nav>
 
-<div class="container">
-  <div class="row">
-    <div class="col">
-      <h2 class="my-4 text-center">
-  Reservas de <span th:text="${usuario.nombre} + ' ' + ${usuario.apellido}">Nombre Apellido</span>
-</h2>
+<div class="container my-4">
+  <h2 class="text-center mb-4">Detalles de la Reserva</h2>
 
-      <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-  <thead class="table-dark">
+  <table class="table table-bordered">
     <tr>
-      <th>ID Reserva</th>
-      <th>Fecha</th>
-      <th>Hora</th>
-      <th>Origen</th>
-      <th>Destino</th>
-      <th>Acciones</th>
-      
-    </tr>
-  </thead>
-  <tbody>
-    <tr th:each="reserva : ${reservas}">
+      <th>ID de Reserva</th>
       <td th:text="${reserva.idReserva}"></td>
-      <td th:text="${reserva.fechaReserva}"></td>
-      <td th:text="${reserva.horaReserva}"></td>
-      <td th:text="${reserva.origenReserva}"></td>
-      <td th:text="${reserva.destinoReserva}"></td>
-      <td>
-  <a th:href="@{/admin/reserva/detalle/{id}(id=${reserva.idReserva})}" class="btn btn-primary btn-sm">
-    Ver Detalles
-  </a>
-</td>
     </tr>
-  </tbody>
-</table>
-      </div>
+    <tr>
+      <th>Fecha</th>
+      <td th:text="${reserva.fechaReserva}"></td>
+    </tr>
+    <tr>
+      <th>Hora</th>
+      <td th:text="${reserva.horaReserva}"></td>
+    </tr>
+    <tr>
+      <th>Origen</th>
+      <td th:text="${reserva.origenReserva}"></td>
+    </tr>
+    <tr>
+      <th>Destino</th>
+      <td th:text="${reserva.destinoReserva}"></td>
+    </tr>
+    <tr>
+      <th>Conductor Actual</th>
+      <td th:text="${reserva.idConductor != null ? reserva.idConductor : 'No asignado'}"></td>
+    </tr>
+  </table>
+
+  <h4 class="mt-4">Asignar Conductor</h4>
+  <form th:action="@{/admin/reserva/asignarConductor}" method="post">
+    <input type="hidden" name="idReserva" th:value="${reserva.idReserva}" />
+    <div class="mb-3">
+      <label for="conductorSelect" class="form-label">Selecciona un conductor:</label>
+      <select class="form-select" id="conductorSelect" name="idConductor" required>
+        <option th:each="c : ${conductores}" th:value="${c.idConductor}"
+                th:text="${c.nombre + ' ' + c.apellido}"></option>
+      </select>
     </div>
-  </div>
+    <button type="submit" class="btn btn-success">Asignar Conductor</button>
+  </form>
 </div>
+
+
+
+      
+
 
 
 

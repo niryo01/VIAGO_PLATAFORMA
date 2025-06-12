@@ -9,5 +9,6 @@ public interface ReservaDAO {
     void eliminar(String idReserva);
     Reserva obtenerPorId(String idReserva);
     List<Reserva> obtenerReservasPorUsuario(String idUsuario);
+    void asignarConductor(String idReserva, String idConductor);
 
 }

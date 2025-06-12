@@ -37,6 +37,17 @@ public String verConductores(Model model) {
     return "conductoresRegistrados";
 }
 
+@GetMapping("/admin/reserva/detalle/{id}")
+public String verDetalleReserva(@PathVariable String id, Model model) {
+    Reserva reserva = reservaDAO.obtenerPorId(id); // usa tu lógica real
+    List<Conductor> conductores = conductorDAO.obtenerTodos(); // o de la memoria
+
+    model.addAttribute("reserva", reserva);
+    model.addAttribute("conductores", conductores);
+    return "detallesReserva";
+}
+
+
 
     @GetMapping("/solicitudes")
     public String verSolicitudes() {

@@ -83,6 +83,13 @@ public class ReservaController {
         return "viajes";
     }
 
+    @PostMapping("/admin/reserva/asignarConductor")
+public String asignarConductor(@RequestParam String idReserva,
+                               @RequestParam String idConductor) {
+    reservaDAO.asignarConductor(idReserva, idConductor); // lógica de memoria
+    return "redirect:/admin/reserva/detalle/" + idReserva;
+}
+
     // ✅ Exportar reserva a Word
     @GetMapping("/reservas/{id}/word")
     public void descargarReservaWord(@PathVariable String id, HttpServletResponse response) throws IOException {

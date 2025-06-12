@@ -45,4 +45,15 @@ public List<Reserva> obtenerReservasPorUsuario(String idUsuario) {
     }
     return resultado;
 }
+
+@Override
+public void asignarConductor(String idReserva, String idConductor) {
+    for (Reserva r : reservas) {
+        if (r.getIdReserva().equals(idReserva)) {
+            r.setIdConductor(idConductor); // usamos el atributo existente
+            break;
+        }
+    }
+}
+
 }

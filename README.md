@@ -96,3 +96,14 @@ Registro de eventos de login:
  - Se integró Logger de SLF4J para registrar accesos exitosos y fallidos (auditoría y seguridad).
 
 Reserva en formato 
+
+
+VERSION 4 - 4.1
+
+Se realizaron los Siguientes Cambios
+
+- Se agregaron las nuevas vistas (detallesReserva, ReservasRegistradas)
+- Se agregaron clases DAO para manejo de reservas (ReservaDAO, ReservaDAOImpl)
+- Ahora el administrador puede visualizar nuevas vistas con respecto al usuario
+- Ahora el administrador puede seleccionar y asignar un conductor a una reserva del usuario
+- Ahora el administrador puede ver los detalles de la reserva de un usuario
