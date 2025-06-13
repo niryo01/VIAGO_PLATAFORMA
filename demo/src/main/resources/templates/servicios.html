@@ -1,103 +1,170 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VIAGO</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <link rel="stylesheet" th:href="@{/styles.css}" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cal+Sans&family=Special+Gothic+Expanded+One&display=swap"
-      rel="stylesheet"
-    />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIAGO</title>
 
-  <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
-  <div class="container-fluid px-5">
-    <a class="navbar-brand texto-titulo" href="#">VIAGO</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNavAltMarkup"
-      aria-controls="navbarNavAltMarkup"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" href="/index">Home</a>
-        <a class="nav-link" href="/viajes">Viajes</a>
-        <a class="nav-link" href="/servicios">Servicios</a>
-        <a class="nav-link" href="#">Contacto</a>
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" th:href="@{/styles.css}" />
 
-        <!-- Si no hay sesión iniciada, mostrar Iniciar Sesion -->
-        <a class="nav-link" th:if="${session.admin == null and session.conductor == null and session.usuario == null}" href="/login">Iniciar Sesión</a>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
 
-        <!-- Si hay sesión iniciada, mostrar Cerrar Sesión -->
-        <a class="nav-link" th:if="${session.admin != null or session.conductor != null or session.usuario != null}" href="/logout">Cerrar Sesión</a>
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-image: url('https://www.alotaxis.com/img/about-img.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .fondo-borroso {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 60px);
+      /* Ajuste para evitar que afecte el footer */
+      backdrop-filter: blur(8px);
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+
+    .contenido {
+      flex: 1;
+    }
+
+    .texto-titulo {
+      color: #d4af37;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1rem;
+      background-color: rgba(31, 31, 46, 0.85);
+      padding: 0.5rem;
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    .navbar {
+      background-color: #1f1f2e !important;
+    }
+
+    .navbar-brand {
+      color: #d4af37 !important;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .navbar-nav .nav-link {
+      color: #f0f0f0 !important;
+      transition: color 0.3s;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #d4af37 !important;
+    }
+
+    .btn-primary {
+      background-color: #d4af37;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #fff;
+      color: #d4af37;
+    }
+
+    .card {
+      background-color: #2e2e40;
+      color: #fff;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .icono {
+      color: #d4af37;
+      margin-right: 8px;
+    }
+
+    footer {
+      background-color: #1f1f2e;
+      color: #fff;
+      text-align: center;
+      padding: 1rem;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="fondo-borroso"></div>
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid px-5">
+      <a class="navbar-brand texto-titulo" href="#">VIAGO</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav ms-auto">
+          <a class="nav-link" href="/index"><i class="fas fa-home icono"></i>Home</a>
+          <a class="nav-link" href="/viajes"><i class="fas fa-route icono"></i>Viajes</a>
+          <a class="nav-link" href="/servicios"><i class="fas fa-taxi icono"></i>Servicios</a>
+          <a class="nav-link" href="#"><i class="fas fa-phone icono"></i>Contacto</a>
+          <a class="nav-link" th:if="${session.admin == null and session.conductor == null and session.usuario == null}"
+            href="/login">
+            <i class="fas fa-sign-in-alt icono"></i>Iniciar Sesión
+          </a>
+          <a class="nav-link" th:if="${session.admin != null or session.conductor != null or session.usuario != null}"
+            href="/logout">
+            <i class="fas fa-sign-out-alt icono"></i>Cerrar Sesión
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-5 contenido">
+    <div class="row" data-aos="fade-up">
+      <div class="col texto-titulo">
+        <h2>Seleccione el servicio que desea utilizar</h2>
+      </div>
+    </div>
+
+    <div class="row mt-3" data-aos="fade-up">
+      <div class="col">
+        <div class="card opciones-servicio">
+          <div class="card-body">
+            <h5 class="card-title"><i class="fas fa-car icono"></i>Vehículo privado</h5>
+            <p class="card-text">Agendar un vehículo privado que lo llevará a su destino, cuando quiera, desde donde
+              quiera.</p>
+            <a th:href="@{/servicios/vehiculo-privado}" class="btn btn-primary">Viajar</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</nav>
 
+  <footer>
+    <p class="mb-0">&copy; 2025 Viago. Todos los derechos reservados.</p>
+  </footer>
 
-    <div class="container text-center mt-3">
-      <div class="row">
-        <div class="col texto-titulo">
-          <h2>Seleccione el servicio que desea utilizar</h2>
-        </div>
-      </div>
-      <!--<div class="row mt-3">
-        <div class="col">
-          <div class="card opciones-servicio">
-            <div class="card-body">
-              <h5 class="card-title">Taxi Privado</h5>
-              <p class="card-text">
-                Buscar vehiculos cercanos a su ubicación en este momento.
-              </p>
-              <a href="#" class="btn btn-primary">Viajar</a>
-            </div>
-          </div>
-        </div>
-       </div>-->
-       <div class="row mt-3">
-        <div class="col">
-          <div class="card opciones-servicio">
-            <div class="card-body">
-              <h5 class="card-title">Vehiculo privado</h5>
-              <p class="card-text">
-                Agendar un vehiculo privado que lo llevara a su destino, cuando quiera, desde donde quiera.
-              </p>
-              <a th:href="@{/servicios/vehiculo-privado}" class="btn btn-primary">Viajar</a>
-            </div>
-          </div>
-        </div>
-       </div>
-      
-    </div>
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 1000, once: true });
+  </script>
+</body>
 
-
-
-
-
-
-    <footer class="bg-dark text-white text-center py-4 mt-3">
-      <p class="mb-0">&copy; 2025 Le Llante. Todos los derechos reservados.</p>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
 </html>
