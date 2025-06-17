@@ -101,7 +101,7 @@
     <nav class="navbar navbar-expand-lg">
       <div class="container-fluid px-5">
         <a class="navbar-brand texto-titulo" href="#">VIAGO</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" title="boton">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
@@ -136,11 +136,11 @@
               <td colspan="5" class="text-center">No hay conductores registrados.</td>
             </tr>
             <tr th:each="conductor : ${conductores}">
-              <td th:text="${conductor.idConductor}"></td>
+              <td th:text="${conductor.id}"></td>
               <td th:text="${conductor.nombre}"></td>
               <td th:text="${conductor.apellido}"></td>
               <td th:text="${conductor.idVehiculo}"></td>
-              <td th:text="${conductor.correo}"></td>
+              <td th:text="${conductor.entidad.correo}"></td>
             </tr>
           </tbody>
         </table>

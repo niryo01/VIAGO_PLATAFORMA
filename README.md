@@ -107,3 +107,10 @@ Se realizaron los Siguientes Cambios
 - Ahora el administrador puede visualizar nuevas vistas con respecto al usuario
 - Ahora el administrador puede seleccionar y asignar un conductor a una reserva del usuario
 - Ahora el administrador puede ver los detalles de la reserva de un usuario
+
+
+VERSION 5 
+DENLE LA BIENVENIDA A LA BASE DE DATOS
+
+-se implemento una base de datos llamada viago
+-El esquema DAO fue mejorado, ahora se usa en conjunto con los repositorios que Spring Boot provee, cumplen la misma funcion

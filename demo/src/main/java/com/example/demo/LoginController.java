@@ -8,35 +8,29 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.dao.AdminDAO;
-import com.example.demo.dao.ConductorDAO;
-import com.example.demo.dao.UsuarioDAO;
+import com.example.demo.repository.AdminRepository;
+import com.example.demo.repository.ConductorRepository;
+import com.example.demo.repository.UsuarioRepository;
 
 
-// Google Guava
-import com.google.common.base.Optional;
-import com.google.common.base.Strings;
 
-// Apache Commons Validator
 import org.apache.commons.validator.routines.EmailValidator;
-
-// SLF4J (usado por Logback)
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Controller
 public class LoginController {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class); // Logger para monitorear eventos
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @Autowired
-    private UsuarioDAO usuarioDAO;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private ConductorDAO conductorDAO;
+    private ConductorRepository conductorRepository;
 
     @Autowired
-    private AdminDAO adminDAO;
+    private AdminRepository adminRepository;
 
     @GetMapping("/login")
     public String showLoginForm() {
@@ -49,7 +43,6 @@ public class LoginController {
                                HttpSession session,
                                Model model) {
 
-        // Apache Commons: validación de email
         EmailValidator validator = EmailValidator.getInstance();
         if (!validator.isValid(email)) {
             model.addAttribute("error", "Correo inválido");
@@ -57,39 +50,31 @@ public class LoginController {
             return "login";
         }
 
-        Admin admin = adminDAO.obtenerAdmin();
-        if (email.equals(admin.getEmail()) && password.equals(admin.getPassword())) {
+        // Login como Admin
+        Admin admin = adminRepository.findByEntidadCorreo(email);
+        if (admin != null && password.equals(admin.getEntidad().getPassword())) {
             session.setAttribute("admin", email);
             logger.info("Inicio de sesión exitoso como ADMIN: {}", email);
             return "redirect:/admin";
         }
-         // Apache Commons: validación de email 
 
-        Conductor conductor = conductorDAO.obtenerPorCorreo(email);
-        Optional<Conductor> optConductor = Optional.fromNullable(conductor); // Guava: Optional para evitar null
-
-        if (optConductor.isPresent() &&
-            !Strings.isNullOrEmpty(password) &&
-            password.equals(optConductor.get().getContraseña())) {
-
-            session.setAttribute("conductor", optConductor.get());
+        // Login como Conductor
+        Conductor conductor = conductorRepository.findByEntidadCorreo(email);
+        if (conductor != null && password.equals(conductor.getEntidad().getPassword())) {
+            session.setAttribute("conductor", conductor);
             logger.info("Inicio de sesión exitoso como CONDUCTOR: {}", email);
             return "redirect:/vistaConductor";
         }
 
-        Usuario usuario = usuarioDAO.obtenerPorCorreo(email);
-        Optional<Usuario> optUsuario = Optional.fromNullable(usuario); // Guava: Optional
-
-        if (optUsuario.isPresent() &&
-            !Strings.isNullOrEmpty(password) &&
-            password.equals(optUsuario.get().getContraseña())) {
-
-            session.setAttribute("usuario", optUsuario.get());
-            logger.info("Inicio de sesión exitoso como USUARIO:: {}", email);
+        // Login como Usuario
+        Usuario usuario = usuarioRepository.findByEntidadCorreo(email);
+        if (usuario != null && password.equals(usuario.getEntidad().getPassword())) {
+            session.setAttribute("usuario", usuario);
+            logger.info("Inicio de sesión exitoso como USUARIO: {}", email);
             return "redirect:/index";
         }
 
-        // Si ningún login fue exitoso
+        // Si ninguna autenticación fue válida
         model.addAttribute("error", "Email o contraseña incorrectos");
         logger.warn("Fallo de inicio de sesión para: {}", email);
         return "login";

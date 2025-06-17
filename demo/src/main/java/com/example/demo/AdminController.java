@@ -1,15 +1,16 @@
 package com.example.demo;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.example.demo.dao.ConductorDAO;
-import com.example.demo.dao.ReservaDAO;
-import com.example.demo.dao.UsuarioDAO;
+import com.example.demo.repository.ConductorRepository;
+import com.example.demo.repository.ReservaRepository;
+import com.example.demo.repository.UsuarioRepository;
 
 import org.springframework.ui.Model;
 
@@ -17,37 +18,39 @@ import org.springframework.ui.Model;
 public class AdminController {
 
     @Autowired
-private ConductorDAO conductorDAO;
+    private ConductorRepository conductorRepository;
 
     @Autowired
-    private UsuarioDAO usuarioDAO;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private ReservaDAO reservaDAO;
+    private ReservaRepository reservaRepository;
 
     @GetMapping("/usuariosRegistrados")
     public String verUsuarios(Model model) {
-        model.addAttribute("usuarios", usuarioDAO.obtenerTodos());
+        model.addAttribute("usuarios", usuarioRepository.findAll());
         return "usuariosRegistrados";
     }
 
     @GetMapping("/conductores")
-public String verConductores(Model model) {
-    model.addAttribute("conductores", conductorDAO.obtenerTodos());
-    return "conductoresRegistrados";
-}
+    public String verConductores(Model model) {
+        model.addAttribute("conductores", conductorRepository.findAll());
+        return "conductoresRegistrados";
+    }
 
-@GetMapping("/admin/reserva/detalle/{id}")
-public String verDetalleReserva(@PathVariable String id, Model model) {
-    Reserva reserva = reservaDAO.obtenerPorId(id); // usa tu lógica real
-    List<Conductor> conductores = conductorDAO.obtenerTodos(); // o de la memoria
+    @GetMapping("/admin/reserva/detalle/{id}")
+    public String verDetalleReserva(@PathVariable Long id, Model model) {
+        Optional<Reserva> reservaOpt = reservaRepository.findById(id); // ✅ USO CORRECTO
+        if (reservaOpt.isEmpty()) {
+            return "error"; // o vista personalizada de error
+        }
 
-    model.addAttribute("reserva", reserva);
-    model.addAttribute("conductores", conductores);
-    return "detallesReserva";
-}
+        List<Conductor> conductores = conductorRepository.findAll(); // ✅ USO CORRECTO
 
-
+        model.addAttribute("reserva", reservaOpt.get());
+        model.addAttribute("conductores", conductores);
+        return "detallesReserva";
+    }
 
     @GetMapping("/solicitudes")
     public String verSolicitudes() {
@@ -55,13 +58,17 @@ public String verDetalleReserva(@PathVariable String id, Model model) {
     }
 
     @GetMapping("/admin/reservas/{id}")
-public String verReservasDelUsuario(@PathVariable String id, Model model) {
-    Usuario usuario = usuarioDAO.obtenerPorId(id);
-    List<Reserva> reservas = reservaDAO.obtenerReservasPorUsuario(id);
+    public String verReservasDelUsuario(@PathVariable Long id, Model model) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findById(id); // ✅ USO CORRECTO
+        if (usuarioOpt.isEmpty()) {
+            return "error";
+        }
 
-    model.addAttribute("usuario", usuario);
-    model.addAttribute("reservas", reservas);
+        List<Reserva> reservas = reservaRepository.findByUsuarioId(id); // ✅ REQUIERE QUE ESTE MÉTODO EXISTA
 
-    return "reservasRegistradas";
-}
+        model.addAttribute("usuario", usuarioOpt.get());
+        model.addAttribute("reservas", reservas);
+
+        return "reservasRegistradas";
+    }
 }

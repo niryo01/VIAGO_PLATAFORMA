@@ -1,16 +1,26 @@
 package com.example.demo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reserva {
-    private String idReserva;
-    private String idUsuario;
-    private String idConductor;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // ID autogenerado
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
+    @ManyToOne
+    @JoinColumn(name = "conductor_id", nullable = true)
+    private Conductor conductor;
+
     private String fechaReserva;
     private String horaReserva;
     private String origenReserva;

@@ -56,7 +56,7 @@
   <table class="table table-bordered">
     <tr>
       <th>ID de Reserva</th>
-      <td th:text="${reserva.idReserva}"></td>
+      <td th:text="${reserva.id}"></td>
     </tr>
     <tr>
       <th>Fecha</th>
@@ -75,20 +75,21 @@
       <td th:text="${reserva.destinoReserva}"></td>
     </tr>
     <tr>
-      <th>Conductor Actual</th>
-      <td th:text="${reserva.idConductor != null ? reserva.idConductor : 'No asignado'}"></td>
-    </tr>
+  <th>Conductor Actual</th>
+  <td th:text="${reserva.conductor != null ? reserva.conductor.nombre + ' ' + reserva.conductor.apellido : 'No asignado'}"></td>
+</tr>
+
   </table>
 
   <h4 class="mt-4">Asignar Conductor</h4>
   <form th:action="@{/admin/reserva/asignarConductor}" method="post">
-    <input type="hidden" name="idReserva" th:value="${reserva.idReserva}" />
+    <input type="hidden" name="idReserva" th:value="${reserva.id}" />
     <div class="mb-3">
       <label for="conductorSelect" class="form-label">Selecciona un conductor:</label>
       <select class="form-select" id="conductorSelect" name="idConductor" required>
-        <option th:each="c : ${conductores}" th:value="${c.idConductor}"
-                th:text="${c.nombre + ' ' + c.apellido}"></option>
-      </select>
+  <option th:each="c : ${conductores}" th:value="${c.id}"
+        th:text="${c.nombre + ' ' + c.apellido}"></option>
+</select>
     </div>
     <button type="submit" class="btn btn-success">Asignar Conductor</button>
   </form>
