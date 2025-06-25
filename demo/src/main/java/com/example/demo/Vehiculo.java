@@ -10,15 +10,16 @@ import lombok.*;
 public class Vehiculo {
 
     @Id
-    private String idVehiculo;
+    @Column(name = "id_vehiculo")
+    private long id;
 
-    private String placa;
-    private String modelo;
-    private String marca;
+
+    @Column(name = "año")
     private int anio;
-    private String color;
 
-    @OneToOne
-    @JoinColumn(name = "conductor_id")
-    private Conductor conductor;
+    private String color;
+    private String marca;
+    private String modelo;
+    private String placa;
+
 }

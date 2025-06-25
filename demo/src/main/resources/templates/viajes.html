@@ -139,6 +139,7 @@
               <th>Origen</th>
               <th>Destino</th>
               <th>Costo</th>
+              <th>Asientos Ocupados</th>
               <th>Descargar</th>
             </tr>
           </thead>
@@ -155,6 +156,7 @@
               <td th:text="${reserva.origenReserva}"></td>
               <td th:text="${reserva.destinoReserva}"></td>
               <td th:text="'$ ' + ${reserva.costoReserva}"></td>
+              <td th:text="${reserva.cantidadReservada}"></td>
               <td>
                 <a th:href="@{'/reservas/' + ${reserva.id} + '/word'}" class="btn btn-primary btn-sm">
                   <i class="fa fa-download"></i> Word

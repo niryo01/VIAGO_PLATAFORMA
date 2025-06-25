@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -16,16 +17,21 @@ import lombok.NoArgsConstructor;
 public class Conductor {
 
     @Id
+    @Column(name = "id_conductor")
     private Long id;
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "id")
-    private Entidad entidad;
+    @JoinColumn(name = "id_conductor")
+    private Usuario usuario;
 
-    private String nombre;
-    private String apellido;
+    @Column(name = "Licencia_Conducir")
     private String licenciaConducir;
+
+    @Column(name = "Disponibilidad")
     private boolean disponibilidad;
-    private String idVehiculo;
+
+    @OneToOne
+    @JoinColumn(name = "id_vehiculo")
+    private Vehiculo vehiculo;
 }

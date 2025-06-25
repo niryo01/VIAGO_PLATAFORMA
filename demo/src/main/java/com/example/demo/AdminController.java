@@ -28,7 +28,7 @@ public class AdminController {
 
     @GetMapping("/usuariosRegistrados")
     public String verUsuarios(Model model) {
-        model.addAttribute("usuarios", usuarioRepository.findAll());
+        model.addAttribute("usuarios", usuarioRepository.findUsuariosConRolUsuario());
         return "usuariosRegistrados";
     }
 

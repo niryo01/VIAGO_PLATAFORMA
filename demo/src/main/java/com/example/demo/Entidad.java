@@ -26,31 +26,30 @@ public class Entidad {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_entidad")
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "Correo", nullable = false, unique = true)
     private String correo;
 
     @Column(nullable = false)
-    private String password;
+    private String Password;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "entidad_rol",
-        joinColumns = @JoinColumn(name = "entidad_id"),
-        inverseJoinColumns = @JoinColumn(name = "rol_id")
-    )
+    @JoinTable(name = "entidad_rol", joinColumns = @JoinColumn(name = "Entidad_ID"), inverseJoinColumns = @JoinColumn(name = "Rol_ID"))
     private Set<Rol> roles = new HashSet<>();
 
     public Entidad(String correo, String password) {
         this.correo = correo;
-        this.password = password;
+        this.Password = password;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Entidad)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Entidad))
+            return false;
         Entidad entidad = (Entidad) o;
         return correo != null && correo.equals(entidad.correo);
     }

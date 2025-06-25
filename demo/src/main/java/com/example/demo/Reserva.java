@@ -11,19 +11,32 @@ public class Reserva {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // ID autogenerado
+    @Column(name = "id_reserva")
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "conductor_id", nullable = true)
+    @JoinColumn(name = "conductor_id")
     private Conductor conductor;
 
-    private String fechaReserva;
-    private String horaReserva;
-    private String origenReserva;
-    private String destinoReserva;
+    @Column(name = "cantidad_reservada")
+    private int cantidadReservada;
+
+    @Column(name = "costo_reserva")
     private double costoReserva;
+
+    @Column(name = "fecha_reserva")
+    private String fechaReserva;
+
+    @Column(name = "hora_reserva")
+    private String horaReserva;
+
+    @Column(name = "origen_reserva")
+    private String origenReserva;
+
+    @Column(name = "destino_reserva")
+    private String destinoReserva;
 }

@@ -136,11 +136,11 @@
               <td colspan="5" class="text-center">No hay conductores registrados.</td>
             </tr>
             <tr th:each="conductor : ${conductores}">
-              <td th:text="${conductor.id}"></td>
-              <td th:text="${conductor.nombre}"></td>
-              <td th:text="${conductor.apellido}"></td>
-              <td th:text="${conductor.idVehiculo}"></td>
-              <td th:text="${conductor.entidad.correo}"></td>
+              <td th:text="${conductor.usuario.id}"></td>
+              <td th:text="${conductor.usuario.nombre}"></td>
+              <td th:text="${conductor.usuario.apellido}"></td>
+              <td th:text="${conductor.vehiculo.id}"></td>
+              <td th:text="${conductor.usuario.entidad.correo}"></td>
             </tr>
           </tbody>
         </table>

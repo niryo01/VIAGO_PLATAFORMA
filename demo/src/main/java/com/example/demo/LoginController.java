@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.repository.AdminRepository;
-import com.example.demo.repository.ConductorRepository;
 import com.example.demo.repository.UsuarioRepository;
 
 
@@ -26,11 +24,6 @@ public class LoginController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private ConductorRepository conductorRepository;
-
-    @Autowired
-    private AdminRepository adminRepository;
 
     @GetMapping("/login")
     public String showLoginForm() {
@@ -50,29 +43,35 @@ public class LoginController {
             return "login";
         }
 
-        // Login como Admin
-        Admin admin = adminRepository.findByEntidadCorreo(email);
-        if (admin != null && password.equals(admin.getEntidad().getPassword())) {
-            session.setAttribute("admin", email);
-            logger.info("Inicio de sesión exitoso como ADMIN: {}", email);
-            return "redirect:/admin";
-        }
 
-        // Login como Conductor
-        Conductor conductor = conductorRepository.findByEntidadCorreo(email);
-        if (conductor != null && password.equals(conductor.getEntidad().getPassword())) {
-            session.setAttribute("conductor", conductor);
-            logger.info("Inicio de sesión exitoso como CONDUCTOR: {}", email);
-            return "redirect:/vistaConductor";
-        }
 
-        // Login como Usuario
-        Usuario usuario = usuarioRepository.findByEntidadCorreo(email);
-        if (usuario != null && password.equals(usuario.getEntidad().getPassword())) {
-            session.setAttribute("usuario", usuario);
-            logger.info("Inicio de sesión exitoso como USUARIO: {}", email);
-            return "redirect:/index";
-        }
+       Usuario usuario = usuarioRepository.findByEntidadCorreo(email);
+        
+if (usuario != null && password.equals(usuario.getEntidad().getPassword())) {
+    
+    if (usuario.getEntidad().getRoles().stream()
+            .anyMatch(rol -> rol.getNombre().equalsIgnoreCase("usuario"))) {
+        
+        session.setAttribute("usuario", usuario);
+        logger.info("Inicio de sesión exitoso como USUARIO: {}", email);
+        return "redirect:/index";
+        
+    } else if (usuario.getEntidad().getRoles().stream()
+            .anyMatch(rol -> rol.getNombre().equalsIgnoreCase("admin"))) {
+        
+        session.setAttribute("admin", email);
+        logger.info("Inicio de sesión exitoso como ADMIN: {}", email);
+        return "redirect:/admin";
+        
+    } else if (usuario.getEntidad().getRoles().stream()
+            .anyMatch(rol -> rol.getNombre().equalsIgnoreCase("conductor"))) {
+        
+        session.setAttribute("conductor", email);
+        logger.info("Inicio de sesión exitoso como CONDUCTOR: {}", email);
+        return "redirect:/vistaConductor";
+    }
+}
+
 
         // Si ninguna autenticación fue válida
         model.addAttribute("error", "Email o contraseña incorrectos");
