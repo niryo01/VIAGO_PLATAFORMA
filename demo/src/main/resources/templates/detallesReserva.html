@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reservas Registradas</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -20,104 +20,106 @@
       href="https://fonts.googleapis.com/css2?family=Cal+Sans&family=Special+Gothic+Expanded+One&display=swap"
       rel="stylesheet"
     />
-</head>
-<body>
-  <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
-  <div class="container-fluid px-5">
-    <a class="navbar-brand texto-titulo" href="#">VIAGO</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNavAltMarkup"
-      aria-controls="navbarNavAltMarkup"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" href="/admin">Viajes</a>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+      <div class="container-fluid px-5">
+        <a class="navbar-brand texto-titulo" href="#">VIAGO</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavAltMarkup"
+          aria-controls="navbarNavAltMarkup"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-link" href="/admin">Viajes</a>
 
-        <!-- Si no hay sesión iniciada, mostrar Iniciar Sesion -->
-        <a class="nav-link" th:if="${session.admin == null and session.conductor == null and session.usuario == null}" href="/login">Iniciar Sesión</a>
+            <!-- Si no hay sesión iniciada, mostrar Iniciar Sesion -->
+            <a
+              class="nav-link"
+              th:if="${session.admin == null and session.conductor == null and session.usuario == null}"
+              href="/login"
+              >Iniciar Sesión</a
+            >
 
-        <!-- Si hay sesión iniciada, mostrar Cerrar Sesión -->
-        <a class="nav-link" th:if="${session.admin != null or session.conductor != null or session.usuario != null}" href="/logout">Cerrar Sesión</a>
+            <!-- Si hay sesión iniciada, mostrar Cerrar Sesión -->
+            <a
+              class="nav-link"
+              th:if="${session.admin != null or session.conductor != null or session.usuario != null}"
+              href="/logout"
+              >Cerrar Sesión</a
+            >
+          </div>
+        </div>
       </div>
+    </nav>
+
+    <div class="container my-4">
+      <h2 class="text-center mb-4">Detalles de la Reserva</h2>
+
+      <table class="table table-bordered">
+        <tr>
+          <th>ID de Reserva</th>
+          <td th:text="${reserva.id}"></td>
+        </tr>
+        <tr>
+          <th>Fecha</th>
+          <td th:text="${reserva.fechaReserva}"></td>
+        </tr>
+        <tr>
+          <th>Hora</th>
+          <td th:text="${reserva.horaReserva}"></td>
+        </tr>
+        <tr>
+          <th>Origen</th>
+          <td th:text="${reserva.origenReserva}"></td>
+        </tr>
+        <tr>
+          <th>Destino</th>
+          <td th:text="${reserva.destinoReserva}"></td>
+        </tr>
+        <tr>
+          <th>Conductor Actual</th>
+          <td
+            th:text="${reserva.conductor != null ? reserva.conductor.usuario.nombre + ' ' + reserva.conductor.usuario.apellido : 'No asignado'}"
+          ></td>
+        </tr>
+      </table>
+
+      <h4 class="mt-4">Asignar Conductor</h4>
+      <form th:action="@{/admin/reserva/asignarConductor}" method="post">
+        <input type="hidden" name="idReserva" th:value="${reserva.id}" />
+        <div class="mb-3">
+          <label for="conductorSelect" class="form-label"
+            >Selecciona un conductor:</label
+          >
+          <select
+            class="form-select"
+            id="conductorSelect"
+            name="idConductor"
+            required
+          >
+            <option
+              th:each="c : ${conductores}"
+              th:value="${c.id}"
+              th:text="${c.usuario.nombre + ' ' + c.usuario.apellido}"
+            ></option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-success">Asignar Conductor</button>
+      </form>
     </div>
-  </div>
-</nav>
 
-<div class="container my-4">
-  <h2 class="text-center mb-4">Detalles de la Reserva</h2>
-
-  <table class="table table-bordered">
-    <tr>
-      <th>ID de Reserva</th>
-      <td th:text="${reserva.id}"></td>
-    </tr>
-    <tr>
-      <th>Fecha</th>
-      <td th:text="${reserva.fechaReserva}"></td>
-    </tr>
-    <tr>
-      <th>Hora</th>
-      <td th:text="${reserva.horaReserva}"></td>
-    </tr>
-    <tr>
-      <th>Origen</th>
-      <td th:text="${reserva.origenReserva}"></td>
-    </tr>
-    <tr>
-      <th>Destino</th>
-      <td th:text="${reserva.destinoReserva}"></td>
-    </tr>
-    <tr>
-  <th>Conductor Actual</th>
-  <td th:text="${reserva.conductor != null ? reserva.conductor.nombre + ' ' + reserva.conductor.apellido : 'No asignado'}"></td>
-</tr>
-
-  </table>
-
-  <h4 class="mt-4">Asignar Conductor</h4>
-  <form th:action="@{/admin/reserva/asignarConductor}" method="post">
-    <input type="hidden" name="idReserva" th:value="${reserva.id}" />
-    <div class="mb-3">
-      <label for="conductorSelect" class="form-label">Selecciona un conductor:</label>
-      <select class="form-select" id="conductorSelect" name="idConductor" required>
-  <option th:each="c : ${conductores}" th:value="${c.id}"
-        th:text="${c.nombre + ' ' + c.apellido}"></option>
-</select>
-    </div>
-    <button type="submit" class="btn btn-success">Asignar Conductor</button>
-  </form>
-</div>
-
-
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<footer class="bg-dark text-white text-center py-4">
+    <footer class="bg-dark text-white text-center py-4">
       <p class="mb-0">&copy; 2025 Viago. Todos los derechos reservados.</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-</body>
+  </body>
 </html>
