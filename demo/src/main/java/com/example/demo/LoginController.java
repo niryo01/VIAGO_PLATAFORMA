@@ -37,7 +37,7 @@ public class LoginController {
                                HttpSession session,
                                Model model) {
 
-        // Validación básica del correo con Apache Commons Validator
+        // Validación basica del correo con Apache Commons Validator
         EmailValidator validator = EmailValidator.getInstance();
         if (!validator.isValid(email)) {
             model.addAttribute("error", "Correo inválido");
