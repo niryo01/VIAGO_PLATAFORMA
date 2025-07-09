@@ -14,6 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +24,8 @@ import java.util.Optional;
 @Controller
 @RequiredArgsConstructor
 public class ReservaController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ReservaController.class);
 
     @Autowired
     private final ReservaRepository reservaRepository;
@@ -31,39 +36,42 @@ public class ReservaController {
     @Autowired
     private final ConductorRepository conductorRepository;
 
-    // Mostrar página de servicios (requiere sesión)
     @GetMapping("/servicios")
     public String mostrarServicios(HttpSession session) {
         if (session.getAttribute("usuario") == null) {
+            logger.warn("Acceso no autorizado a /servicios");
             return "redirect:/login";
         }
+        logger.info("Usuario accedió a la vista de servicios.");
         return "servicios";
     }
 
-    // Mostrar formulario para "Vehículo Privado"
     @GetMapping("/servicios/vehiculo-privado")
     public String showReservaForm(HttpSession session) {
         if (session.getAttribute("usuario") == null) {
+            logger.warn("Acceso no autorizado a /servicios/vehiculo-privado");
             return "redirect:/login";
         }
+        logger.info("Usuario accedió al formulario de reserva de vehículo privado.");
         return "vehiculoPrivado";
     }
 
-    // Procesar reserva (crear)
     @PostMapping("/servicios")
     public String processReserva(@RequestParam String origen,
-            @RequestParam String fechaSalida,
-            @RequestParam String horaInput,
-            @RequestParam String destino,
-            @RequestParam int numeroPersonas,
-            HttpSession session) {
+                                 @RequestParam String fechaSalida,
+                                 @RequestParam String horaInput,
+                                 @RequestParam String destino,
+                                 @RequestParam int numeroPersonas,
+                                 HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
+            logger.warn("Intento de reservar sin sesión activa.");
             return "redirect:/login";
         }
 
         usuario = usuarioRepository.findById(usuario.getId()).orElse(null);
         if (usuario == null) {
+            logger.error("Usuario en sesión no encontrado en base de datos.");
             return "redirect:/login";
         }
 
@@ -71,12 +79,13 @@ public class ReservaController {
         nuevaReserva.setUsuario(usuario);
         nuevaReserva.setFechaReserva(fechaSalida);
         nuevaReserva.setHoraReserva(horaInput);
-        nuevaReserva.setCostoReserva(10.0 * (numeroPersonas ));
-        nuevaReserva.setCantidadReservada(numeroPersonas );
+        nuevaReserva.setCostoReserva(10.0 * numeroPersonas);
+        nuevaReserva.setCantidadReservada(numeroPersonas);
         nuevaReserva.setOrigenReserva(origen);
         nuevaReserva.setDestinoReserva(destino);
 
         reservaRepository.save(nuevaReserva);
+        logger.info("Reserva creada exitosamente para usuario ID: {}", usuario.getId());
 
         List<Reserva> reservasUsuario = reservaRepository.findByUsuario(usuario);
         session.setAttribute("misReservas", reservasUsuario);
@@ -88,17 +97,20 @@ public class ReservaController {
     public String showViajes(Model model, HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
+            logger.warn("Intento de acceso a /viajes sin sesión.");
             return "redirect:/login";
         }
 
         List<Reserva> reservasUsuario = reservaRepository.findByUsuario(usuario);
         model.addAttribute("reservas", reservasUsuario);
+        logger.info("Se muestran las reservas del usuario ID: {}", usuario.getId());
         return "viajes";
     }
 
     @PostMapping("/admin/reserva/asignarConductor")
     public String asignarConductor(@RequestParam Long idReserva,
-            @RequestParam Long idConductor) {
+                                   @RequestParam Long idConductor) {
+        logger.info("Asignación de conductor {} a reserva {}", idConductor, idReserva);
         Optional<Reserva> reservaOpt = reservaRepository.findById(idReserva);
         Optional<Conductor> conductorOpt = conductorRepository.findById(idConductor);
 
@@ -107,15 +119,20 @@ public class ReservaController {
             Conductor conductor = conductorOpt.get();
             reserva.setConductor(conductor);
             reservaRepository.save(reserva);
+            logger.info("Conductor asignado correctamente.");
+        } else {
+            logger.warn("No se pudo asignar conductor. Reserva o conductor no encontrados.");
         }
 
         return "redirect:/admin/reserva/detalle/" + idReserva;
     }
- 
+
     @GetMapping("/reservas/{id}/word")
     public void descargarReservaWord(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        logger.info("Generación de archivo Word para la reserva ID: {}", id);
         Optional<Reserva> reservaOpt = reservaRepository.findById(id);
         if (reservaOpt.isEmpty()) {
+            logger.warn("Reserva con ID {} no encontrada", id);
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
@@ -135,7 +152,6 @@ public class ReservaController {
             titleRun.addBreak();
 
             XWPFTable table = document.createTable(8, 2);
-
             table.getRow(0).getCell(0).setText("ID Reserva");
             table.getRow(0).getCell(1).setText(String.valueOf(reserva.getId()));
 
@@ -155,12 +171,10 @@ public class ReservaController {
             table.getRow(4).getCell(1).setText(reserva.getHoraReserva());
 
             table.getRow(5).getCell(0).setText("Origen");
-            table.getRow(5).getCell(1)
-                    .setText(reserva.getOrigenReserva() != null ? reserva.getOrigenReserva() : "N/A");
+            table.getRow(5).getCell(1).setText(reserva.getOrigenReserva() != null ? reserva.getOrigenReserva() : "N/A");
 
             table.getRow(6).getCell(0).setText("Destino");
-            table.getRow(6).getCell(1)
-                    .setText(reserva.getDestinoReserva() != null ? reserva.getDestinoReserva() : "N/A");
+            table.getRow(6).getCell(1).setText(reserva.getDestinoReserva() != null ? reserva.getDestinoReserva() : "N/A");
 
             table.getRow(7).getCell(0).setText("Costo");
             table.getRow(7).getCell(1).setText(String.format("%.2f", reserva.getCostoReserva()));
