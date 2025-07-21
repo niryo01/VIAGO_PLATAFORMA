@@ -75,6 +75,12 @@ public class ReservaController {
             return "redirect:/login";
         }
 
+            if (origen == null || origen.trim().isEmpty() || destino == null || destino.trim().isEmpty()) {
+        logger.warn("Origen o destino vacío. No se puede procesar la reserva.");
+        session.setAttribute("errorReserva", "Debe completar el origen y destino.");
+        return "redirect:/servicios/vehiculo-privado"; 
+    }
+
         Reserva nuevaReserva = new Reserva();
         nuevaReserva.setUsuario(usuario);
         nuevaReserva.setFechaReserva(fechaSalida);

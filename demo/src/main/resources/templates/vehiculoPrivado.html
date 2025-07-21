@@ -242,5 +242,12 @@
     <script>
       AOS.init({ duration: 1000, once: true });
     </script>
+
+        <script>
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      const today = now.toISOString().split("T")[0];
+      document.getElementById("fechaSalida").min = today;
+    </script>
   </body>
 </html>
