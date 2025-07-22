@@ -7,17 +7,18 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-
 import org.apache.poi.xwpf.usermodel.*;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,27 +37,28 @@ public class ReservaController {
     @Autowired
     private final ConductorRepository conductorRepository;
 
+    private static final List<String> ZONAS_LIMA = Arrays.asList(
+        "San Isidro", "Miraflores", "Lince", "Callao", "Surco", "La Molina", "Jesús María", "San Miguel"
+    );
+
     @GetMapping("/servicios")
     public String mostrarServicios(HttpSession session) {
         if (session.getAttribute("usuario") == null) {
             logger.warn("Acceso no autorizado a /servicios");
             return "redirect:/login";
         }
-        logger.info("Usuario accedió a la vista de servicios.");
         return "servicios";
     }
 
     @GetMapping("/servicios/vehiculo-privado")
     public String showReservaForm(HttpSession session) {
         if (session.getAttribute("usuario") == null) {
-            logger.warn("Acceso no autorizado a /servicios/vehiculo-privado");
             return "redirect:/login";
         }
-        logger.info("Usuario accedió al formulario de reserva de vehículo privado.");
         return "vehiculoPrivado";
     }
 
-    @PostMapping("/servicios")
+       @PostMapping("/servicios")
     public String processReserva(@RequestParam String origen,
                                  @RequestParam String fechaSalida,
                                  @RequestParam String horaInput,
@@ -75,11 +77,18 @@ public class ReservaController {
             return "redirect:/login";
         }
 
-            if (origen == null || origen.trim().isEmpty() || destino == null || destino.trim().isEmpty()) {
-        logger.warn("Origen o destino vacío. No se puede procesar la reserva.");
-        session.setAttribute("errorReserva", "Debe completar el origen y destino.");
-        return "redirect:/servicios/vehiculo-privado"; 
-    }
+        if (origen == null || origen.trim().isEmpty() ||
+            destino == null || destino.trim().isEmpty()) {
+            logger.warn("Origen o destino vacío. No se puede procesar la reserva.");
+            session.setAttribute("errorReserva", "Debe completar el origen y destino.");
+            return "redirect:/servicios/vehiculo-privado"; 
+        }
+
+        if (contieneHTML(origen) || contieneHTML(destino)) {
+            logger.warn("Intento de entrada con código potencialmente malicioso en origen o destino.");
+            session.setAttribute("errorReserva", "No se permiten caracteres o etiquetas HTML.");
+            return "redirect:/servicios/vehiculo-privado";
+        }
 
         Reserva nuevaReserva = new Reserva();
         nuevaReserva.setUsuario(usuario);
@@ -103,20 +112,17 @@ public class ReservaController {
     public String showViajes(Model model, HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
-            logger.warn("Intento de acceso a /viajes sin sesión.");
             return "redirect:/login";
         }
 
         List<Reserva> reservasUsuario = reservaRepository.findByUsuario(usuario);
         model.addAttribute("reservas", reservasUsuario);
-        logger.info("Se muestran las reservas del usuario ID: {}", usuario.getId());
         return "viajes";
     }
 
     @PostMapping("/admin/reserva/asignarConductor")
     public String asignarConductor(@RequestParam Long idReserva,
                                    @RequestParam Long idConductor) {
-        logger.info("Asignación de conductor {} a reserva {}", idConductor, idReserva);
         Optional<Reserva> reservaOpt = reservaRepository.findById(idReserva);
         Optional<Conductor> conductorOpt = conductorRepository.findById(idConductor);
 
@@ -125,9 +131,6 @@ public class ReservaController {
             Conductor conductor = conductorOpt.get();
             reserva.setConductor(conductor);
             reservaRepository.save(reserva);
-            logger.info("Conductor asignado correctamente.");
-        } else {
-            logger.warn("No se pudo asignar conductor. Reserva o conductor no encontrados.");
         }
 
         return "redirect:/admin/reserva/detalle/" + idReserva;
@@ -135,10 +138,8 @@ public class ReservaController {
 
     @GetMapping("/reservas/{id}/word")
     public void descargarReservaWord(@PathVariable Long id, HttpServletResponse response) throws IOException {
-        logger.info("Generación de archivo Word para la reserva ID: {}", id);
         Optional<Reserva> reservaOpt = reservaRepository.findById(id);
         if (reservaOpt.isEmpty()) {
-            logger.warn("Reserva con ID {} no encontrada", id);
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
@@ -177,10 +178,10 @@ public class ReservaController {
             table.getRow(4).getCell(1).setText(reserva.getHoraReserva());
 
             table.getRow(5).getCell(0).setText("Origen");
-            table.getRow(5).getCell(1).setText(reserva.getOrigenReserva() != null ? reserva.getOrigenReserva() : "N/A");
+            table.getRow(5).getCell(1).setText(reserva.getOrigenReserva());
 
             table.getRow(6).getCell(0).setText("Destino");
-            table.getRow(6).getCell(1).setText(reserva.getDestinoReserva() != null ? reserva.getDestinoReserva() : "N/A");
+            table.getRow(6).getCell(1).setText(reserva.getDestinoReserva());
 
             table.getRow(7).getCell(0).setText("Costo");
             table.getRow(7).getCell(1).setText(String.format("%.2f", reserva.getCostoReserva()));
@@ -189,5 +190,11 @@ public class ReservaController {
             document.write(out);
             out.flush();
         }
+    }
+
+
+    private boolean contieneHTML(String texto) {
+        
+        return !Jsoup.clean(texto, Safelist.none()).equals(texto);
     }
 }
