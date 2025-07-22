@@ -182,7 +182,7 @@
               <td th:text="${reserva.id}"></td>
               <td th:text="${reserva.usuario.entidad.correo}"></td>
               <td
-                th:text="${reserva.conductor != null ? reserva.conductor.usuario.entidad.correo : 'No asignado'}"
+                th:text="${reserva.conductor != null ? reserva.conductor.usuario.nombre : 'No asignado'}"
               ></td>
 
               <td th:text="${reserva.fechaReserva}"></td>
